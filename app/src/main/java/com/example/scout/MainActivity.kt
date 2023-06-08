@@ -3,6 +3,7 @@ package com.example.scout
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -17,10 +18,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
@@ -29,6 +36,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,14 +48,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scout.ui.theme.ScoutTheme
 import kotlin.math.roundToInt
+
+
+
+private val touristDestinations: List<Destination> = listOf(
+    Destination(R.drawable.img, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_1, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+    Destination(R.drawable.img_2, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_3, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+    Destination(R.drawable.img_4, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_5, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+    Destination(R.drawable.img_6, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_7, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+    Destination(R.drawable.img_8, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_9, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+    Destination(R.drawable.img_10, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 260),
+    Destination(R.drawable.img_11, tittle = "Cala Comte Beach", country = "Ibiza, Spain", height = 210),
+)
+
+data class Destination(val image: Int, val tittle: String, val country: String, val height: Int)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +91,15 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Home()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 16.dp),
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        NavBar()
+                    }
                 }
             }
         }
@@ -76,6 +116,10 @@ fun Home(){
         SearchBar()
         Spacer(modifier = Modifier.height(18.dp))
         Categories()
+        Spacer(modifier = Modifier.height(18.dp))
+        Grid(touristDestinations)
+
+
     }
 
 }
@@ -278,6 +322,105 @@ fun NavBar() {
 
         }
     }
+}
+
+
+@Composable
+fun Grid(contents: List<Destination>){
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(2),
+    ){
+        items(contents){content ->
+            Card(content)
+        }
+        item{
+            Spacer(modifier = Modifier.height(90.dp))
+        }
+    }
+}
+
+
+
+
+
+@Composable
+fun Card(content: Destination){
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth(0.53f)
+            .height(content.height.dp)
+            .padding(8.dp)
+    ) {
+        Box {
+            Image(
+                painter = painterResource(content.image),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp, 0.dp)
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Favorite",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(37.dp)
+                        .clip(RoundedCornerShape(100.dp))
+                        .background(Color(0x658D8D8D))
+                        .padding(8.dp)
+
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Bottom
+                ,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            startY = 450f,
+                            endY = 900f
+                        )
+                    )
+                    .padding(6.dp)
+
+            ) {
+                Text(
+                    text = content.tittle,
+                    textAlign = TextAlign.Start,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                )
+                Row(verticalAlignment = Alignment.CenterVertically){
+                    Icon(imageVector = Icons.Default.LocationOn, contentDescription = "location", tint = Color.LightGray, modifier = Modifier.size(12.dp))
+                    Text(
+                        text = content.country,
+                        textAlign = TextAlign.Start,
+                        color = Color.LightGray,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    )
+                }
+            }
+        }
+
+    }
+
 }
 
 
